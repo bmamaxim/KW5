@@ -1,3 +1,5 @@
+import json
+
 from src.data_classes.positions import Employer, Vacancies
 
 
@@ -28,12 +30,21 @@ def hh_inst_vacancies(data):
     """
     vacancies_info = []
     if data:
-        for info in data:
+        for info in data['items']:
             vacancies_info.append(Vacancies(
                         pk=info['id'],
                         title=info['name'],
-                        salary_from=info.get('salary')['from'],
-                        salary_to=info.get('salary')['to'],
+                        salary=info.get('salary'),
                         vacancies_url=info['alternate_url']
             ))
         return vacancies_info
+
+
+def reading_file(path: str):
+    """
+    Функция чтения json файла.
+    :param path: str
+    :return: json
+    """
+    with open(path, 'r', encoding='utf-8') as file:
+        return json.load(file)
