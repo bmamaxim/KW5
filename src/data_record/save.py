@@ -54,7 +54,6 @@ class CSVSaver(Saver, ABC):
     def add_vacancies(self, name: str, vacancies: list,) -> None:
         vacancy = [vacancy.to_dict_vacancy() for vacancy in vacancies]
         output = ','.join([*vacancy[0]])
-        print(output)
         for obj in vacancy:
             output += (f"\n{name},"
                        f"{obj['vacancy_id']},"
