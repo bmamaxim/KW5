@@ -42,11 +42,8 @@ class CSVSaver(Saver, ABC):
 
     def add_employers(self, employers: list) -> None:
         employer = [employer.to_dict_employer() for employer in employers]
-        print(employer)
         output = ('"' + '","'.join([*employer[0]]) + '"')
-        print(output)
         for obj in employer:
-            print(obj)
             output += (f"\n{obj['employers_id']},"
                        f"{obj['company_name']},"
                        f"{obj['open_vacancies']},"

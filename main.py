@@ -32,6 +32,7 @@ def user_interaction():
         vacancies_init = hh_inst_vacancies(employer_vacancies)
         csv_saver.add_vacancies(employer["name"], vacancies_init)
     bd_manager.execute_sql_script()
+    bd_manager.insert_employers_data()
 
 
 if __name__ == "__main__":
