@@ -44,3 +44,4 @@ class HeadHunterAPI(API, ABC):
             raise RecursionError(f'{response.status_code}')
         else:
             return response.json()
+

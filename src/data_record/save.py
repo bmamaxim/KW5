@@ -1,7 +1,8 @@
 import json
 from abc import ABC, abstractmethod
+from typing import List, Any
 
-from config import JSON_PATH, JSON_PATH_VACANCIES
+from config import CSV_PATH, CSV_PATH_VACANCIES
 
 
 class Saver(ABC):
@@ -14,46 +15,55 @@ class Saver(ABC):
         """
         Метод записи в файл, по заданному пути: "JSON_PATH",
         данных по работодателям переданных из "main"
+        employers - json данные о работодателях
+        из внешнего источника (HH.ru)
         :param employers: list
         :return: None
         """
         raise NotImplemented
 
     @abstractmethod
-    def add_vacancies(self, title: str, vacancies_url: str) -> None:
+    def add_vacancies(self, name: str, vacancies_url: str) -> None:
         """
         Метод записи в файл, по заданному пути: "JSON_PATH",
         данных по вакансиям работодателей переданных из "main"
-        :param title: str
+        title - ключ название профессии из файла employers.json
+        vacancies_url - ключ url ссылка на вакансию из файла employers.json
+        :param name: str
         :param vacancies_url: str
         :return: None
         """
         raise NotImplemented
 
-class JSONSaver(Saver, ABC):
+class CSVSaver(Saver, ABC):
     """
-    Класс записи json данных
+    Класс записи локальных файлов
     """
 
     def add_employers(self, employers: list) -> None:
-        """
-        Функция записи json данных о работодателях
-        по заранее записанному пути
-        :param employers: list
-        :return: list[dict]
-        """
         employer = [employer.to_dict_employer() for employer in employers]
-        with open(JSON_PATH, 'w', encoding='utf-8') as file:
-            json.dump(employer, file)
+        print(employer)
+        output = ('"' + '","'.join([*employer[0]]) + '"')
+        print(output)
+        for obj in employer:
+            print(obj)
+            output += (f"\n{obj['employers_id']},"
+                       f"{obj['company_name']},"
+                       f"{obj['open_vacancies']},"
+                       f"{obj['vacancies_url']}")
+        with open(CSV_PATH, 'w', newline='') as file:
+            file.write(output)
 
-    def add_vacancies(self, title: str, vacancies: list,) -> None:
-        """
-        Функция записи json данных по вакансиям
-        заранее определенных работодателей
-        :param title: str
-        :param vacancies:
-        :return:
-        """
+    def add_vacancies(self, name: str, vacancies: list,) -> None:
         vacancy = [vacancy.to_dict_vacancy() for vacancy in vacancies]
-        with open(JSON_PATH_VACANCIES/f"{title}.json", 'w', encoding='utf-8') as file:
-            json.dump(vacancy, file)
+        output = ','.join([*vacancy[0]])
+        print(output)
+        for obj in vacancy:
+            output += (f"\n{name},"
+                       f"{obj['vacancy_id']},"
+                       f"{obj['vacancy_name']},"
+                       f"{obj['salary']['from']},"
+                       f"{obj['salary']['to']},"
+                       f"{obj['vacancies_url']}")
+        with open(CSV_PATH_VACANCIES/f"{name}.csv", 'w', encoding='utf-8') as file:
+            file.write(output)

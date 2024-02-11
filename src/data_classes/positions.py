@@ -6,13 +6,13 @@ class Employer:
     """
     def __init__(self,
                  pk: int,
-                 title: str,
+                 name: str,
                  vacancies: int,
                  employer_url: str,
                  vacancies_url: str
                  ) -> object:
         self.__pk = pk
-        self.__title = title
+        self.__name = name
         self.__vacancies = vacancies
         self.__employer_url = employer_url
         self.__vacancies_url = vacancies_url
@@ -24,10 +24,9 @@ class Employer:
         :return:
         """
         return {
-            'id': self.__pk,
-            'title': self.__title,
+            'employers_id': self.__pk,
+            'company_name': self.__name,
             'open_vacancies': self.__vacancies,
-            'employer_url': self.__employer_url,
             'vacancies_url': self.__vacancies_url
         }
 
@@ -72,8 +71,8 @@ class Vacancies:
         :return:
         """
         return {
-            'id': self.__pk,
-            'title': self.__title,
+            'vacancy_id': self.__pk,
+            'vacancy_name': self.__title,
             'salary': self.__salary,
             'vacancies_url': self.__vacancies_url
         }
