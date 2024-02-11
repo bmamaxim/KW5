@@ -1,6 +1,6 @@
-import json
+
 from abc import ABC, abstractmethod
-from typing import List, Any
+
 
 from config import CSV_PATH, CSV_PATH_VACANCIES
 

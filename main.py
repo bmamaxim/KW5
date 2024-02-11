@@ -1,5 +1,5 @@
 from config import CSV_PATH, config, SQL_PATH
-from manager.dbmanager import DBManager
+from src.manager.dbmanager import DBManager
 from src.data_processing.engine import HeadHunterAPI
 from src.data_record.save import CSVSaver
 from src.utils import hh_inst_employer, hh_inst_vacancies
