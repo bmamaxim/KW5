@@ -46,11 +46,23 @@ class Manager(ABC):
     def insert_employers_data(self) -> None:
         """
         Записывает данные employers.csv
-        в таблицу базы данных kw5
+        в таблицу employers базы данных kw5
         :return: None
         """
         pass
 
+    @abstractmethod
+    def insert_vacancy_data(self, name: str) -> None:
+        """
+        Записывает данные файлов директории vacancies
+        в таблицу vacancies базы данных kw5.
+        name - название компании,
+        все csv файлы записаны по назанию компании работодателя,
+        по name совершается считывание этих файлов.
+        :param name: str
+        :return: None
+        """
+        pass
 
 
 class DBManager(Manager, ABC):
@@ -69,11 +81,9 @@ class DBManager(Manager, ABC):
         self.conn = psycopg2.connect(dbname='postgres', **self.params)
         self.cur = self.conn.cursor()
 
-
     def create_database(self) -> None:
         self.conn.autocommit = True
         self.cur.execute(f'CREATE DATABASE {self.name}')
-
 
     def execute_sql_script(self) -> None:
         conn = psycopg2.connect(dbname=self.name, **self.params)
@@ -107,13 +117,13 @@ class DBManager(Manager, ABC):
         try:
             with conn:
                 with conn.cursor() as cur:
-                    with open(self.csv_path_vacancy/f"{name}.csv", 'r', newline='') as file:
+                    with open(self.csv_path_vacancy / f"{name}.csv", 'r', newline='') as file:
                         vacancies = csv.reader(file)
                         next(vacancies)
                         for vacancy in vacancies:
                             cur.execute(
                                 "INSERT INTO vacancies (company_name, vacancy_id, vacancy_name, salary_from, "
-                                "salary_from, vacancies_url)"
+                                "salary_to, vacancies_url)"
                                 " VALUES (%s,%s, %s, %s, %s, %s)",
                                 vacancy)
         finally:

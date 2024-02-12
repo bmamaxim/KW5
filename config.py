@@ -5,7 +5,7 @@ from configparser import ConfigParser
 
 
 CSV_PATH = Path.joinpath(Path(__file__).parent, "employers", "employers.csv")
-CSV_PATH_VACANCIES = Path.joinpath(Path(__file__).parent, "vacancies", "vacancies.csv")
+CSV_PATH_VACANCIES = Path.joinpath(Path(__file__).parent, "vacancies")
 SQL_PATH = Path.joinpath(Path(__file__).parent, "fill_table.sql")
 
 

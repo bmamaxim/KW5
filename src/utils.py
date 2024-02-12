@@ -49,7 +49,7 @@ def reading_file(path: str, name: str) -> list[dict]:
     with open(path/f"{name}.csv", 'r', encoding='utf-8') as file:
         return file.read()
 
-def add_structure(paht: str) -> None:
+def add_structure(paht: str, name: str) -> None:
     output = "company_name,vacancy_id,vacancy_name,salary_from,salary_to,vacancies_url"
-    with open(paht, 'w', encoding='utf-8') as file:
+    with open(paht/f"{name}", 'w', newline='') as file:
         file.write(output)

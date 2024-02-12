@@ -24,23 +24,24 @@ def user_interaction():
     employers = []
     for employer_id in employers_id:
         employers.append(hirer.get_employers(employer_id))
+    bd_manager.insert_employers_data()
     employers_init = hh_inst_employer(employers)
     csv_saver = CSVSaver()
     csv_saver.add_employers(employers_init)
-    employer_vacancies = []
     for employer in employers:
-        employer_vacancies.append(hirer.get_vacancies(employer['vacancies_url']))
-    vacancies_init = []
-    for vacancies in employer_vacancies:
-        vacancies_init.extend(hh_inst_vacancies(vacancies))
-    #print(vacancies_init[0])
-    add_structure(CSV_PATH_VACANCIES)
-    for employer in employers:
-        for vacancies in vacancies_init:
-            #print(vacancies.__dict__)
-            csv_saver.add_vacancies(employer["name"], vacancies.to_dict_vacancy())
-        #bd_manager.insert_vacancy_data(employer["name"])
-    #bd_manager.insert_employers_data()
+        employer_vacancies = hirer.get_vacancies(employer['vacancies_url'])
+        vacancies_init = hh_inst_vacancies(employer_vacancies)
+        csv_saver.add_vacancies(employer["name"], vacancies_init)
+        bd_manager.insert_vacancy_data(employer["name"])
+
+
+
+
+
+
+
+
+
 
 
 
