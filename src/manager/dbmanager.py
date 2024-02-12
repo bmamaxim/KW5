@@ -1,3 +1,4 @@
+import csv
 from abc import ABC, abstractmethod
 
 import psycopg2
@@ -57,12 +58,14 @@ class DBManager(Manager, ABC):
                  name: str,
                  params: dict,
                  sql_path: str,
-                 csv_path: str
+                 csv_path: str,
+                 csv_path_vacancy: str
                  ):
         self.name = name
         self.params = params
         self.sql_path = sql_path
         self.csv_path = csv_path
+        self.csv_path_vacancy = csv_path_vacancy
         self.conn = psycopg2.connect(dbname='postgres', **self.params)
         self.cur = self.conn.cursor()
 
@@ -89,12 +92,29 @@ class DBManager(Manager, ABC):
             with conn:
                 with conn.cursor() as cur:
                     with open(self.csv_path, 'r', newline='') as file:
-                        employers = file.read()
-                        # next(employers)
+                        employers = csv.reader(file)
+                        next(employers)
                         for employer in employers:
                             cur.execute(
                                 "INSERT INTO employers (employers_id, company_name, open_vacancies, vacancies_url)"
                                 " VALUES (%s,%s, %s, %s)",
-                                employer)
+                                employer[:4])
+        finally:
+            conn.close()
+
+    def insert_vacancy_data(self, name: str) -> None:
+        conn = psycopg2.connect(dbname=self.name, **self.params)
+        try:
+            with conn:
+                with conn.cursor() as cur:
+                    with open(self.csv_path_vacancy/f"{name}.csv", 'r', newline='') as file:
+                        vacancies = csv.reader(file)
+                        next(vacancies)
+                        for vacancy in vacancies:
+                            cur.execute(
+                                "INSERT INTO vacancies (company_name, vacancy_id, vacancy_name, salary_from, "
+                                "salary_from, vacancies_url)"
+                                " VALUES (%s,%s, %s, %s, %s, %s)",
+                                vacancy)
         finally:
             conn.close()

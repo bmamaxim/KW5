@@ -6,7 +6,7 @@
 CREATE TABLE employers (
     employers_id int NOT NULL,
     company_name text,
-    open_vacancies text,
+    open_vacancies int,
     vacancies_url text
 );
 
