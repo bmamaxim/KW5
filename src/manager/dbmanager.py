@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 
 import psycopg2
 
+from config import SQL_PATH, CSV_PATH, CSV_PATH_VACANCIES, config
+
 
 class Manager(ABC):
     """
@@ -61,6 +63,53 @@ class Manager(ABC):
         по name совершается считывание этих файлов.
         :param name: str
         :return: None
+        """
+        pass
+
+    @abstractmethod
+    def get_companies_and_vacancies_count(self):
+        """
+        Получает список всех компаний
+        и количество вакансий у каждой компании.
+        :return:
+        """
+        pass
+
+    @abstractmethod
+    def get_all_vacancies(self):
+        """
+        Получает список всех вакансий
+        с указанием названия компании,
+        названия вакансии и зарплаты
+        и ссылки на вакансию.
+        :return:
+        """
+        pass
+
+    @abstractmethod
+    def get_avg_salary(self) -> str:
+        """
+        Получает среднюю зарплату по вакансиям.
+        :return:
+        """
+        pass
+
+    @abstractmethod
+    def get_vacancies_with_higher_salary(self):
+        """
+        Получает список всех вакансий,
+        у которых зарплата выше средней по всем вакансиям.
+        :return:
+        """
+        pass
+
+    @abstractmethod
+    def get_vacancies_with_keyword(self):
+        """
+        получает список всех вакансий,
+        в названии которых содержатся переданные в метод слова,
+        например: python
+        :return:
         """
         pass
 
@@ -128,3 +177,66 @@ class DBManager(Manager, ABC):
                                 vacancy)
         finally:
             conn.close()
+
+    def get_companies_and_vacancies_count(self):
+        conn = psycopg2.connect(dbname=self.name, **self.params)
+        try:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT company_name, open_vacancies "
+                                "FROM employers")
+                    result = cur.fetchall()
+        finally:
+            conn.close()
+        return result
+
+    def get_all_vacancies(self):
+        conn = psycopg2.connect(dbname=self.name, **self.params)
+        try:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT * FROM vacancies")
+                    result = cur.fetchall()
+        finally:
+            conn.close()
+        return result
+
+    def get_avg_salary(self):
+        conn = psycopg2.connect(dbname=self.name, **self.params)
+        try:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT AVG(salary_from - salary_to)"
+                                "FROM vacancies")
+                    result = cur.fetchall()
+        finally:
+            conn.close()
+        return result
+
+    def get_vacancies_with_higher_salary(self):
+        conn = psycopg2.connect(dbname=self.name, **self.params)
+        try:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute("""SELECT vacancy_name AVG FROM vacancies
+                            WHERE (salary_from - salary_to)/2 > 
+                            (SELECT AVG(salary_from - salary_to)
+                            FROM vacancies)""")
+                    result = cur.fetchall()
+        finally:
+            conn.close()
+        return result
+
+    def get_vacancies_with_keyword(self, query: str):
+            conn = psycopg2.connect(dbname=self.name, **self.params)
+            try:
+                with conn:
+                    with conn.cursor() as cur:
+                        cur.execute(f"""SELECT company_name, vacancy_name, salary_from, salary_to, vacancies_url 
+                        FROM vacancies "
+                        "WHERE vacancy_name LIKE '%{query}%'""")
+                        result = cur.fetchall()
+            finally:
+                conn.close()
+            return result
+

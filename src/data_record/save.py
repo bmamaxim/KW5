@@ -36,52 +36,6 @@ class Saver(ABC):
         """
         raise NotImplemented
 
-    @abstractmethod
-    def get_companies_and_vacancies_count(self):
-        """
-        Получает список всех компаний
-        и количество вакансий у каждой компании.
-        :return:
-        """
-        raise NotImplemented
-
-    @abstractmethod
-    def get_all_vacancies(self):
-        """
-        Получает список всех вакансий
-        с указанием названия компании,
-        названия вакансии и зарплаты
-        и ссылки на вакансию.
-        :return:
-        """
-        raise NotImplemented
-
-    @abstractmethod
-    def get_avg_salary(self):
-        """
-        Получает среднюю зарплату по вакансиям.
-        :return:
-        """
-        raise NotImplemented
-
-    @abstractmethod
-    def get_vacancies_with_higher_salary(self):
-        """
-        Получает список всех вакансий,
-        у которых зарплата выше средней по всем вакансиям.
-        :return:
-        """
-        raise NotImplemented
-
-    @abstractmethod
-    def get_vacancies_with_keyword(self):
-        """
-        получает список всех вакансий,
-        в названии которых содержатся переданные в метод слова,
-        например: python
-        :return:
-        """
-        raise NotImplemented
 
 
 class CSVSaver(Saver, ABC):
@@ -111,20 +65,6 @@ class CSVSaver(Saver, ABC):
                        f"{obj['salary']['from']},"
                        f"{obj['salary']['to']},"
                        f"{obj['vacancies_url']}")
-        with open(CSV_PATH_VACANCIES / f"{name}.csv", 'a', newline='') as file:
+        with open(CSV_PATH_VACANCIES / f"{name}.csv", 'w', newline='') as file:
             file.write(output)
 
-    def get_companies_and_vacancies_count(self):
-        pass
-
-    def get_all_vacancies(self):
-        pass
-
-    def get_avg_salary(self):
-        pass
-
-    def get_vacancies_with_higher_salary(self):
-        pass
-
-    def get_vacancies_with_keyword(self):
-        pass
