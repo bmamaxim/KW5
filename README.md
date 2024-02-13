@@ -25,3 +25,115 @@
               таблицы данными о работодателях и их вакансиях.
     
     •	Создать класс DBManager  для работы с данными в БД.
+
+Действие 1:
+      Клонировать репозиторий по ссылке: https://github.com/bmamaxim/KW5.git
+Действие 2:
+      Создать файл database.ini, в файле должны содержаться данные по подключению к Postgresql:
+      [postgresql]
+      host=localhost
+      user=postgres
+      password=password  (сдесь записать свой пароль)
+      port=5432
+            по умолчанию создастся БД с названием 'kw5'
+
+Действие 3:
+      Запустить main.py и взаимодействовать с запросами в терминале.
+      
+
+                                                                СТРУКТУРА ПРОЕКТА
+
+
+Пака employers: хранит в себе данные о работодателях в формате .csv.
+
+Папка src: хранит в себе все исполняемые директории.
+
+
+          Папка data_classes хранит в себе файл positions.py c с классами Employer и Vacancies.
+                  Класс Employer содержит 1 метод to_dict_employer. 
+                  Метод применяется к json данным о работодателях возвращает словарь в формате ключ:значение.
+                  Класс Vacancies содержит в себе метод валидации salary и метод to_dict_vacancy.
+                  Метод to_dict_vacancy применяется к json данным о вакансиях работодателей
+                  возвращает словарь в формате ключ:значение.
+          Папка data_processing хранит в себе файл engine.py c абстрактным классом API(ABC)
+                  содержащим абстрактные методы методы get_employers и get_vacancies.
+          классом HeadHunterAPI(API, ABC)
+                  содержащим get_employers - получает данные по работодателям в формате json
+                             get_vacancies - принимает url вакансий работодателя возвращает
+                             данные в формате json о вакансиях
+          Папка data_record хранит в себе файл save.py. save.py сохраняет локально данные в формате csv.
+          содержит абстрактный класс Saver(ABC) 
+                  содерщащим абстрактные методы записи работодателей и вакансий add_employers и
+                  add_vacancies соответственно.
+          Класс CSVSaver(Saver, ABC)
+                  содержит метод add_employers сохраненяет локально данные о работодателях в файл employers.csv
+                  метод add_vacancies сохраненяет локально данные о вакансиях по работодателям,
+                  создает 10 файлов с названиями работодателей и содержащих вакансии только 
+                  соответствующего названию работодателя.
+          Папка manager содержит в себе файл bdmanager.py. Файл с абстрактным классом 
+          Manager(ABC)
+          содержащим абстрактные методы create_database, execute_sql_script, insert_employers_data,
+          insert_vacancy_data, get_companies_and_vacancies_count, get_all_vacancies, get_avg_salary,
+          get_vacancies_with_keyword.
+          DBManager(Manager, ABC)
+          содержит методы:
+                          создания базы данных в Postgresql
+                          чтения и записи скрипта создания таблиц
+                          записи данных о работодателях в таблицу employers
+                          записи данных по вакансиям работодателей в таблицу vacancies
+                           
+                          get_companies_and_vacancies_count()
+                          получает список всех компаний и количество вакансий у каждой компании.
+                          get_all_vacancies()
+                          получает список всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на вакансию.
+                          get_avg_salary()
+                          получает среднюю зарплату по вакансиям.
+                          get_vacancies_with_higher_salary()
+                          получает список всех вакансий, у которых зарплата выше средней по всем вакансиям.
+                          get_vacancies_with_keyword()
+                          получает список всех вакансий, в названии которых содержатся переданные в метод слова, например python.
+         Файл utils.py содержит функции инициализации классов Employer и Vacancies
+         Папка vacancies для хранения данных о вакансиях по работодателям
+         Файл config.py данные констант пути чтения и записи данных и конфигурацию БД
+         Файл fill_table.sql содержит скрипт записи таблиц БД
+         Файл main.py - user_interaction сваязывает приложение в единый организм.
+         Содержит:
+                   employers_id = [
+                                   2180,     - id Озон
+                                   9498112,  - id Арарат Парк Хаятт
+                                   4598057,  - id Виза Виста
+                                   41862,    - id УГМК
+                                   3968,     - id Контур
+                                   10325037, - id Магнит
+                                   10309,    - id Пятерочка
+                                   982698,   - id САРКСЭС
+                                   9357,     - id УГМК-Телеком
+                                   1942330   - id Яндекс Краунд
+                                   ]
+                  name = 'kw5' название БД по умолчанию
+                  params = config() - параметры подключения к БД
+                  bd_manager.create_database() - автоматическое создание БД
+                  bd_manager.execute_sql_script() - запуск скрипта на создание таблиц в БД
+                  hirer = HeadHunterAPI() - переменная класса HHапи
+                  
+                  employers = [] - список словарей с работодателями и их данными, только необходимое
+                  for employer_id in employers_id:   - итератор для получения заданных работодателей
+                      employers.append(hirer.get_employers(employer_id)) - запись списка employers
+
+                  employers_init = hh_inst_employer(employers) - передача информации в инициализатор класса employers
+                  csv_saver = CSVSaver() - переменная класса CSVSaver
+                  csv_saver.add_employers(employers_init) запись файла работодателей
+                  bd_manager.insert_employers_data() - запись таблицы БД данными работодателей
+
+                    for employer in employers: - итератор по работодателям
+                        employer_vacancies = hirer.get_vacancies(employer['vacancies_url']) - получение данных с хх.ру
+                                                                                              по вакансиям работодателей
+                        vacancies_init = hh_inst_vacancies(employer_vacancies) - инициализируем класс Vacancies
+                        csv_saver.add_vacancies(employer["name"], vacancies_init) - записываем файлы с вакансиями
+                        bd_manager.insert_vacancy_data(employer["name"]) - записываем данные с вакансиями в БД
+                  
+                  взаимодействие с пользователем
+                                   
+
+                       
+                          
