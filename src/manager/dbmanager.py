@@ -3,8 +3,6 @@ from abc import ABC, abstractmethod
 
 import psycopg2
 
-from config import SQL_PATH, CSV_PATH, CSV_PATH_VACANCIES, config
-
 
 class Manager(ABC):
     """
@@ -67,49 +65,49 @@ class Manager(ABC):
         pass
 
     @abstractmethod
-    def get_companies_and_vacancies_count(self):
+    def get_companies_and_vacancies_count(self) -> list:
         """
         Получает список всех компаний
         и количество вакансий у каждой компании.
-        :return:
+        :return: list
         """
         pass
 
     @abstractmethod
-    def get_all_vacancies(self):
+    def get_all_vacancies(self) -> list:
         """
         Получает список всех вакансий
         с указанием названия компании,
         названия вакансии и зарплаты
         и ссылки на вакансию.
-        :return:
+        :return: list
         """
         pass
 
     @abstractmethod
-    def get_avg_salary(self) -> str:
+    def get_avg_salary(self) -> list:
         """
         Получает среднюю зарплату по вакансиям.
-        :return:
+        :return: list
         """
         pass
 
     @abstractmethod
-    def get_vacancies_with_higher_salary(self):
+    def get_vacancies_with_higher_salary(self) -> list:
         """
         Получает список всех вакансий,
         у которых зарплата выше средней по всем вакансиям.
-        :return:
+        :return: list
         """
         pass
 
     @abstractmethod
-    def get_vacancies_with_keyword(self):
+    def get_vacancies_with_keyword(self) -> list:
         """
         получает список всех вакансий,
         в названии которых содержатся переданные в метод слова,
         например: python
-        :return:
+        :return:list
         """
         pass
 

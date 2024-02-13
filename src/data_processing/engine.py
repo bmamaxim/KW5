@@ -11,7 +11,7 @@ class API(ABC):
     @abstractmethod
     def get_employers(self, employer_id: int) -> list[dict]:
         """
-        Метод запроса данных с HeadHunter employers
+        Метод запроса данных с HeadHunter API employers
         с проверкой на доступность данных.
         :return: json
         """
@@ -20,7 +20,7 @@ class API(ABC):
     @abstractmethod
     def get_vacancies(self, vacancies_url: str) -> list[dict]:
         """
-        Метод запроса данных с HeadHunter employers
+        Метод запроса данных с HeadHunter API vacancies
         с проверкой на доступность данных.
         :return: json
         """

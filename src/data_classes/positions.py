@@ -17,11 +17,11 @@ class Employer:
         self.__employer_url = employer_url
         self.__vacancies_url = vacancies_url
 
-    def to_dict_employer(self):
+    def to_dict_employer(self) -> dict:
         """
         Метод стандартизируемой записи данных
         работодателя для .json
-        :return:
+        :return: dict
         """
         return {
             'employers_id': self.__pk,
@@ -64,11 +64,11 @@ class Vacancies:
                 "to": 0,
             }
 
-    def to_dict_vacancy(self):
+    def to_dict_vacancy(self) -> dict:
         """
         Метод стандартизируемой записи данных
         по вакансиям работодателей
-        :return:
+        :return: dict
         """
         return {
             'vacancy_id': self.__pk,
